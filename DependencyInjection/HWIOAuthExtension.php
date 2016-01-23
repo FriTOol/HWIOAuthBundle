@@ -71,7 +71,7 @@ class HWIOAuthExtension extends Extension
 
         // set failed auth path
         $container->setParameter('hwi_oauth.failed_auth_path', $config['failed_auth_path']);
-        
+
         // setup services for all configured resource owners
         $resourceOwners = array();
         foreach ($config['resource_owners'] as $name => $options) {
@@ -111,7 +111,7 @@ class HWIOAuthExtension extends Extension
                 $container
                     ->setDefinition('hwi_oauth.registration.form.handler.fosub_bridge', new DefinitionDecorator('hwi_oauth.registration.form.handler.fosub_bridge.def'))
                     ->addArgument($config['fosub']['username_iterations'])
-                    ->setScope('request')
+                    ->setShared(false)
                 ;
 
                 $container->setAlias('hwi_oauth.registration.form.handler', 'hwi_oauth.registration.form.handler.fosub_bridge');
