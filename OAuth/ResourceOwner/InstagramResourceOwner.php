@@ -31,6 +31,27 @@ class InstagramResourceOwner extends GenericOAuth2ResourceOwner
         'profilepicture'  => 'data.profile_picture',
     );
 
+    public function getAuthorizationUrl($redirectUri, array $extraParameters = array())
+    {
+        if ($this->options['csrf']) {
+            if (null === $this->state) {
+                $this->state = $this->generateNonce();
+            }
+
+            $this->storage->save($this, $this->state, 'csrf_state');
+        }
+
+        $parameters = array_merge(array(
+            'response_type' => 'code',
+            'client_id'     => $this->options['client_id'],
+            'scope'         => $this->options['scope'],
+            'state'         => $this->state ? urlencode($this->state) : null,
+            'redirect_uri'  => $redirectUri,
+        ), $extraParameters);
+
+        return str_replace('%2B', '+', $this->normalizeUrl($this->options['authorization_url'], $parameters));
+    }
+    
     /**
      * {@inheritDoc}
      */
